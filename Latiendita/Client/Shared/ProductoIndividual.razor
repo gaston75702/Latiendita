@@ -1,0 +1,24 @@
+﻿<div>
+    <p>
+        Nombre: <b>@Producto.Nombre</b>
+    </p>
+    <p>Precio: @Producto.Precio</p>
+    @if (MostrarBotones)
+    {
+        <div>
+            <button @onclick="@(() => EliminarProducto.InvokeAsync(Producto))">Borrar</button>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public Producto Producto { get; set; } = null!;
+
+    [Parameter]
+    public bool MostrarBotones { get; set; } = false;
+
+    [Parameter]
+    public EventCallback<Producto> EliminarProducto { get; set; }
+}

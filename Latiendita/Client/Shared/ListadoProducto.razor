@@ -1,0 +1,52 @@
+﻿@page "/productos"
+
+@using Latiendita.Client.Helpers
+@inject IJSRuntime js
+
+<h3>Listado de Productos</h3>
+
+<input type="checkbox" @bind="MostrarBotones" />
+<span>Mostrar botones</span>
+
+<ListadoGenerico Listado="Productos">
+    <HayRegistros Context="producto">
+        <ProductoIndividual Producto="producto"
+                            EliminarProducto="EliminarProducto"
+                            MostrarBotones="MostrarBotones" />
+    </HayRegistros>
+</ListadoGenerico>
+
+@code {
+    [EditorRequired]
+    public List<Producto> Productos { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Productos = ObtenerProductos();
+    }
+
+    public bool MostrarBotones { get; set; } = false;
+
+    private List<Producto> ObtenerProductos()
+    {
+        // Lógica para obtener los productos desde una fuente de datos (base de datos, servicio, etc.)
+        // Aquí se proporciona un ejemplo con datos estáticos
+        return new List<Producto>
+        {
+            new Producto { Id = 1, Nombre = "Producto 1", Precio=10 },
+            new Producto { Id = 2, Nombre = "Producto 2", Precio = 19 },
+            new Producto { Id = 3, Nombre = "Producto 3", Precio = 5 }
+        };
+    }
+
+    private async Task EliminarProducto(Producto producto)
+    {
+        var confirmado = await js.InvokeAsync<bool>("confirm", $"¿Desea borrar el producto {producto.Nombre}?");
+
+        if (confirmado)
+        {
+            Console.WriteLine("Eliminando un producto");
+            Productos.Remove(producto);
+        }
+    }
+}
